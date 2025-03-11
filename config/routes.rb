@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   # Custom user routes
   resources :users, only: [ :show ]
   resources :events
+  resources :attendees, only: [ :create, :destroy ]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
