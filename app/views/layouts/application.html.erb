@@ -8,10 +8,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%# -- Devise flash messages %>
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
@@ -27,6 +23,13 @@
   </head>
 
   <body>
+    <header>
+    <%= link_to "Home", root_path %>
+    <%= link_to "Logout", destroy_user_session_path, data: { "turbo-method": :delete } %>
+
+    <%# -- Devise flash messages %>
+    <% if alert %><p class="alert"><%= alert %></p><% end %>
+    </header>
     <%= yield %>
   </body>
 </html>

@@ -1,0 +1,24 @@
+<div id="<%= dom_id event %>">
+  <h2>
+    <p>
+      <%= link_to event.title, event %>
+    </p>
+  </h2>
+  <p>
+    <% if event.creator.present? %>
+      <%= link_to '@' + event.creator.display_name, event.creator %>
+    <% else %>
+      <em>Unknown creator</em>
+    <% end %>
+  </p>
+  <p>
+    <strong>Date:</strong>
+    <%= event.date %>
+  </p>
+
+  <p>
+    <strong>Location:</strong>
+    <%= event.location %>
+  </p>
+
+</div>

@@ -1,0 +1,15 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @event %>
+
+<div>
+  <%= @event.details%>
+</div>
+
+<div>
+  <% if @event.creator == current_user %>
+    <%= link_to "Edit this event", edit_event_path(@event) %>
+
+    <%= button_to "Delete Event", @event, method: :delete %>
+  <% end %>
+</div>

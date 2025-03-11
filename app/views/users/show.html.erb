@@ -1,0 +1,21 @@
+<div class="user-profile">
+  <h1>@<%= @user.username %></h1>
+
+  <% if @user == current_user %>
+    <p>
+      <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-primary" %>
+    </p>
+  <% end %>
+
+  <h3><%= '@' + @user.username + "'s"%> events:</h3>
+
+  <% if @events.any? %>
+    <div class="events-list">
+      <% @events.each do |event| %>
+        <%= render event %>
+      <% end %>
+    </div>
+  <% else %>
+    <p>This user hasn't created any events yet.</p>
+  <% end %>
+</div>
