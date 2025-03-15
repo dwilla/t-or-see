@@ -24,15 +24,12 @@
 
   <body>
     <header>
-    <% if user_signed_in? %>
-      <% if current_user.admin? %>
-        <%= link_to "Locations", locations_path %>
+      <%= link_to "Locations", locations_path %>
+      <% if user_signed_in? %>
+        <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { turbo: false } %>
+      <% else %>
+        <%= link_to "Account", auth_path %>
       <% end %>
-      <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { turbo: false } %>
-    <% else %>
-      <%= link_to "Account", auth_path %>
-    <% end %>
-    
     </header>
     
     <% if flash.any? %>

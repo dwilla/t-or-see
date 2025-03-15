@@ -1,0 +1,24 @@
+<div class="nested-fields border p-3 mb-3 rounded">
+  <div class="row">
+    <div class="col-md-4">
+      <%= f.label :day, style: "display: block" %>
+      <%= f.select :day, BusinessHour.days.keys.map { |day| [day.capitalize, day] }, 
+                  { include_blank: "Select day" }, 
+                  { class: "form-select" } %>
+    </div>
+    
+    <div class="col-md-3">
+      <%= f.label :opens, "Opening Time", style: "display: block" %>
+      <%= f.time_field :opens, class: "form-control" %>
+    </div>
+    
+    <div class="col-md-3">
+      <%= f.label :closes, "Closing Time", style: "display: block" %>
+      <%= f.time_field :closes, class: "form-control" %>
+    </div>
+    
+    <div class="col-md-2 d-flex align-items-end">
+      <%= link_to_remove_association "Remove", f, class: "btn btn-outline-danger btn-sm mt-4" %>
+    </div>
+  </div>
+</div> 

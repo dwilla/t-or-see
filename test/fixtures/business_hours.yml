@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  day: 1
+  opens: 2025-03-15 09:56:39
+  closes: 2025-03-15 09:56:39
+  location: one
+
+two:
+  day: 1
+  opens: 2025-03-15 09:56:39
+  closes: 2025-03-15 09:56:39
+  location: two

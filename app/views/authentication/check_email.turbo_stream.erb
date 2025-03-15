@@ -3,16 +3,26 @@
   
   <% if user_exists %>
     <%= turbo_stream.replace "auth_form" do %>
-      <%= render partial: "users/sessions/form", locals: { email: @email, resource: User.new(email: @email), resource_name: :user } %>
+      <%= render partial: "users/sessions/form", locals: { 
+        email: @email, 
+        resource: User.new(email: @email), 
+        resource_name: :user,
+        devise_mapping: @devise_mapping 
+      } %>
     <% end %>
   <% else %>
     <%= turbo_stream.replace "auth_form" do %>
-      <%= render partial: "users/registrations/form", locals: { email: @email, resource: User.new(email: @email), resource_name: :user } %>
+      <%= render partial: "users/registrations/form", locals: { 
+        email: @email, 
+        resource: User.new(email: @email), 
+        resource_name: :user,
+        devise_mapping: @devise_mapping 
+      } %>
     <% end %>
   <% end %>
 <% else %>
   <%= turbo_stream.replace "auth_form" do %>
-    <div class="alert alert-danger">Please provide an email address.</div>
+    <div>Please provide an email address.</div>
     <%= render partial: "authentication/email_form" %>
   <% end %>
 <% end %> 

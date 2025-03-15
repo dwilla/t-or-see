@@ -2,6 +2,8 @@ class AuthenticationController < ApplicationController
   # Include Devise helpers
   include Devise::Controllers::Helpers
 
+  before_action :set_devise_mapping
+
   def index
     # Alert for guest users wanting notifications
     if params[:notification_alert]
@@ -46,5 +48,11 @@ class AuthenticationController < ApplicationController
       format.turbo_stream
       format.json { render json: { error: e.message }, status: :unprocessable_entity }
     end
+  end
+
+  private
+
+  def set_devise_mapping
+    @devise_mapping = Devise.mappings[:user]
   end
 end

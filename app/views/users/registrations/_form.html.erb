@@ -8,12 +8,12 @@
   
   <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="field">
+  <div>
     <%= f.label :email %><br />
     <%= f.email_field :email, autofocus: true, autocomplete: "email", value: local_assigns[:email], readonly: local_assigns[:email].present? %>
   </div>
 
-  <div class="field">
+  <div>
     <%= f.label :password %>
     <% if @minimum_password_length %>
     <em>(<%= @minimum_password_length %> characters minimum)</em>
@@ -21,17 +21,17 @@
     <%= f.password_field :password, autocomplete: "new-password" %>
   </div>
 
-  <div class="field">
+  <div>
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
   </div>
 
-  <div class="actions">
+  <div>
     <%= f.submit "Sign up" %>
   </div>
 <% end %>
 
-<div class="auth-links">
+<div>
   <%= link_to "Already have an account?", new_session_path(resource_name) %><br />
   <%= link_to "Use a different email", auth_path %>
 </div> 

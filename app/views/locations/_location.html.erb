@@ -28,4 +28,8 @@
     <strong>Zip Code:</strong>
     <%= location.zip_code %>
   </p>
+  
+  <% if location.business_hours.any? %>
+    <%= render partial: 'locations/business_hours', locals: { location: location, expanded: false } %>
+  <% end %>
 </div> 

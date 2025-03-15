@@ -1,0 +1,70 @@
+<%
+  current_day = Date.today.strftime("%A").downcase
+  current_hours = location.business_hours.find_by(day: current_day)
+  current_time = Time.current
+  is_open = if current_hours
+              current_time.between?(current_hours.opens, current_hours.closes)
+            else
+              false
+            end
+%>
+
+<div class="business-hours">
+  <%= turbo_frame_tag "business_hours_#{location.id}" do %>
+    <div class="status-indicator mb-2">
+      <% if location.currently_open? %>
+        <span class="badge bg-success">Open</span>
+      <% else %>
+        <span class="badge bg-danger">Closed</span>
+      <% end %>
+    </div>
+    <% if expanded %>
+      <div class="expanded-hours">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Hours</th>
+              <th class="text-end">
+                <%= link_to "Show Less", business_hours_location_path(location, expanded: false),
+                          class: "btn btn-sm btn-outline-secondary",
+                          data: { turbo_frame: "business_hours_#{location.id}" } %>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% Date::DAYNAMES.map(&:downcase).each do |day| %>
+              <% hours = location.business_hours.find_by(day: day) %>
+              <tr class="<%= 'table-active' if day == current_day %>">
+                <td><%= day.capitalize %></td>
+                <td>
+                  <% if hours %>
+                    <%= hours.opens.strftime("%I:%M %p") %> - <%= hours.closes.strftime("%I:%M %p") %>
+                  <% else %>
+                    Closed
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="collapsed-hours">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>
+            Today: 
+            <% if current_hours %>
+              <%= current_hours.opens.strftime("%I:%M %p") %> - <%= current_hours.closes.strftime("%I:%M %p") %>
+            <% else %>
+              Closed
+            <% end %>
+          </span>
+          <%= link_to "Show All Hours", business_hours_location_path(location, expanded: true),
+                      class: "btn btn-sm btn-outline-secondary",
+                      data: { turbo_frame: "business_hours_#{location.id}" } %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div> 

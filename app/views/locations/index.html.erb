@@ -5,14 +5,42 @@
 <div id="locations">
   <% @locations.each do |location| %>
     <div class="location-card">
-      <%= render location %>
-      <p>
-        <%= link_to "Show this location", location %>
-      </p>
+      <h2><%= location.name %></h2>
+      
+      <% if location.image.attached? %>
+        <div class="location-image">
+          <%= image_tag location.image.variant(resize_to_limit: [400, 400]) %>
+        </div>
+      <% end %>
+      
+      <div class="location-details">
+        <p>
+        <%= location.address %>
+        <%= link_to "📍 Directions", "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(location.address)}", 
+            class: "directions-link", 
+            target: "_blank", 
+            rel: "noopener noreferrer" %>
+        </p>
+      </div>
+
+      <% if location.business_hours.any? %>
+        <%= render partial: 'business_hours', locals: { location: location, expanded: false } %>
+      <% end %>
+
+      <div class="actions">
+        <% if user_signed_in? && (current_user.admin? || current_user.managed_locations.include?(location)) %>
+          <%= link_to "Edit", edit_location_path(location) %>
+          <% if current_user.admin? %>
+            | <%= link_to "Delete", location, method: :delete, data: { confirm: "Are you sure?" } %>
+          <% end %>
+        <% end %>
+      </div>
+      
+      <hr>
     </div>
   <% end %>
 </div>
 
-<% if current_user.admin? %>
+<% if user_signed_in? && current_user.admin? %>
   <%= link_to "New location", new_location_path %>
 <% end %>

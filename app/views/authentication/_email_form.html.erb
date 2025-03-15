@@ -1,12 +1,12 @@
 <%= form_with url: check_email_path, method: :post, data: { turbo_stream: true } do |f| %>
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
   
-  <div class="field">
+  <div>
     <%= f.label :email %><br />
     <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true %>
   </div>
 
-  <div class="actions">
-    <%= f.submit "Continue", class: "btn btn-primary" %>
+  <div>
+    <%= f.submit "Continue" %>
   </div>
 <% end %> 

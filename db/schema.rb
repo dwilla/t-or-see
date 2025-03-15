@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_14_204644) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_15_155639) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -46,6 +46,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_14_204644) do
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_attendees_on_event_id"
     t.index ["user_id"], name: "index_attendees_on_user_id"
+  end
+
+  create_table "business_hours", force: :cascade do |t|
+    t.integer "day"
+    t.time "opens"
+    t.time "closes"
+    t.integer "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_business_hours_on_location_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -107,6 +117,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_14_204644) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "attendees", "events"
   add_foreign_key "attendees", "users"
+  add_foreign_key "business_hours", "locations"
   add_foreign_key "events", "locations"
   add_foreign_key "events", "users", column: "creator_id"
   add_foreign_key "managers", "locations"

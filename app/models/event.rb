@@ -13,15 +13,17 @@ class Event < ApplicationRecord
 
   scope :past, -> {
     where("date < ?", Date.current)
-    .or(where("date = ? AND end_time < ?", Date.current, Time.current))
+    .or(where("date = ? AND end_time < ?", Date.current, Time.current.strftime("%H:%M:%S")))
   }
 
   scope :upcoming, -> {
     where("date > ?", Date.current)
-    .or(where("date = ? AND start_time > ?", Date.current, Time.current))
+    .or(where("date = ? AND start_time > ?", Date.current, Time.current.strftime("%H:%M:%S")))
   }
 
-  # Get the poster image, falling back to the location's image if not available
+  default_scope { order(date: :asc, start_time: :asc) }
+
+  # falls back to the location's image if no event image
   def display_image
     if poster.attached?
       poster

@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   # Custom user routes
   resources :users, only: [ :show ]
   resources :events
-  resources :locations
+  resources :locations do
+    member do
+      get "business_hours"
+    end
+  end
   resources :attendees, only: [ :create, :destroy ]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
