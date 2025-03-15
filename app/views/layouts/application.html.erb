@@ -24,12 +24,27 @@
 
   <body>
     <header>
-    <%= link_to "Home", root_path %>
-    <%= link_to "Logout", destroy_user_session_path, data: { "turbo-method": :delete } %>
-
-    <%# -- Devise flash messages %>
-    <% if alert %><p class="alert"><%= alert %></p><% end %>
+    <% if user_signed_in? %>
+      <% if current_user.admin? %>
+        <%= link_to "Locations", locations_path %>
+      <% end %>
+      <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { turbo: false } %>
+    <% else %>
+      <%= link_to "Account", auth_path %>
+    <% end %>
+    
     </header>
+    
+    <% if flash.any? %>
+      <div class="flash-messages">
+        <% flash.each do |key, value| %>
+          <div class="alert alert-<%= key == 'notice' ? 'info' : 'danger' %>">
+            <%= value %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    
     <%= yield %>
   </body>
 </html>

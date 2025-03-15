@@ -5,6 +5,10 @@ class Users::SessionsController < Devise::SessionsController
 
   # GET /resource/sign_in
   def new
+    # Handles the email check for custom sign in/up forms
+    if params[:email].present?
+      self.resource = resource_class.new(email: params[:email])
+    end
     super
   end
 
@@ -18,10 +22,15 @@ class Users::SessionsController < Devise::SessionsController
     super
   end
 
-  # protected
+  protected
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_in_params
   #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
   # end
+
+  # Redirect to the unified auth page instead of the login page
+  def after_sign_out_path_for(resource_or_scope)
+    auth_path
+  end
 end

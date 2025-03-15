@@ -1,4 +1,4 @@
-<%= form_with(model: event) do |form| %>
+<%= form_with(model: event, data: { turbo: false }) do |form| %>
   <% if event.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
@@ -21,13 +21,36 @@
   </div>
 
   <div>
-    <%= form.label :location, style: "display: block" %>
-    <%= form.text_field :location %>
+    <%= form.label :start_time, style: "display: block" %>
+    <%= form.time_field :start_time %>
+  </div>
+
+  <div>
+    <%= form.label :end_time, style: "display: block" %>
+    <%= form.time_field :end_time %>
+  </div>
+
+  <div>
+    <%= form.label :location_id, "Location", style: "display: block" %>
+    <%= form.collection_select :location_id, @locations, :id, :name, { prompt: "Select a location" }, { class: "form-select" } %>
+    <small class="text-muted">Need a new location? Please contact the administrator.</small>
   </div>
   <div>
     <%= form.label :details, style: "display: block" %>
-    <%= form.text_field :details %>
+    <%= form.text_area :details, rows: 5 %>
   </div>
+
+  <div>
+    <%= form.label :poster, "Event Poster/Image", style: "display: block" %>
+    <%= form.file_field :poster, accept: 'image/png,image/jpeg,image/jpg' %>
+    <% if event.poster.attached? %>
+      <div class="mt-2">
+        <p>Current poster:</p>
+        <%= image_tag event.poster.variant(resize_to_limit: [200, 200]), class: "img-thumbnail" %>
+      </div>
+    <% end %>
+  </div>
+
   <div>
     <%= form.hidden_field :creator_id, value: current_user.id %>
   </div>

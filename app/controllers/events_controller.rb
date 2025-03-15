@@ -1,14 +1,32 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: :index
   before_action :set_event, only: %i[ show edit update destroy ]
+  before_action :set_locations, only: %i[ new edit create update ]
+  before_action :ensure_manager, only: %i[ new create edit update destroy ]
 
   # GET /events or /events.json
   def index
     @events = Event.all
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream { @events = @events.upcoming }
+    end
   end
 
   # GET /events/1 or /events/1.json
   def show
+    if params[:reset_others]
+      @other_events = Event.where.not(id: @event.id).upcoming
+    else
+      @other_events = [] # Initialize as empty array when not resetting others
+    end
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+      format.json { render :show }
+    end
   end
 
   # GET /events/new
@@ -26,7 +44,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to @event, notice: "Event was successfully created." }
+        format.html { redirect_to events_path, notice: "Event was successfully created." }
         format.json { render :show, status: :created, location: @event }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -39,7 +57,7 @@ class EventsController < ApplicationController
   def update
     respond_to do |format|
       if @event.update(event_params)
-        format.html { redirect_to @event, notice: "Event was successfully updated." }
+        format.html { redirect_to events_path, notice: "Event was successfully updated." }
         format.json { render :show, status: :ok, location: @event }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -64,8 +82,26 @@ class EventsController < ApplicationController
       @event = Event.find(params[:id])
     end
 
+    # Set available locations for the form
+    def set_locations
+      # If user is a manager, show their managed locations
+      @locations = current_user.managed_locations
+
+      # If user doesn't manage any locations or we want to show all locations, add all locations
+      if @locations.empty?
+        @locations = Location.all
+      end
+    end
+
+    # Ensure the user is a manager of at least one location
+    def ensure_manager
+      unless current_user.manager?
+        redirect_to events_path, alert: "You need to be a manager of at least one location to create or edit events."
+      end
+    end
+
     # Only allow a list of trusted parameters through.
     def event_params
-      params.require(:event).permit(:date, :location, :title, :creator_id, :details)
+      params.require(:event).permit(:date, :location_id, :title, :creator_id, :details, :start_time, :end_time, :poster)
     end
 end

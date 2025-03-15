@@ -13,8 +13,4 @@ class UsersController < ApplicationController
       redirect_to root_path, alert: "User not found"
     end
   end
-
-  def user_params
-    params.require(:user).permit(:username)
-  end
 end

@@ -1,12 +1,18 @@
 Rails.application.routes.draw do
-  # Devise routes should come before custom user routes
+  # Authentication routes
+  get "auth" => "authentication#index", as: :auth
+  post "check_email" => "authentication#check_email", as: :check_email
+
+  # Devise routes
   devise_for :users, controllers: {
-    sessions: "users/sessions"
+    sessions: "users/sessions",
+    registrations: "users/registrations"
   }
 
   # Custom user routes
   resources :users, only: [ :show ]
   resources :events
+  resources :locations
   resources :attendees, only: [ :create, :destroy ]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -19,6 +25,6 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
+  # Root path
   root "events#index"
 end

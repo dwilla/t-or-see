@@ -1,0 +1,18 @@
+<h1>Locations</h1>
+
+<p style="color: green"><%= notice %></p>
+
+<div id="locations">
+  <% @locations.each do |location| %>
+    <div class="location-card">
+      <%= render location %>
+      <p>
+        <%= link_to "Show this location", location %>
+      </p>
+    </div>
+  <% end %>
+</div>
+
+<% if current_user.admin? %>
+  <%= link_to "New location", new_location_path %>
+<% end %>

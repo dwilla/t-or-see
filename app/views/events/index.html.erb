@@ -5,10 +5,66 @@
 <h1>Events</h1>
 
 <div id="events">
-  <% @events.each do |event| %>
-    <%= render event %>
+<%= turbo_frame_tag "events" do %>
+  <div>
+    <%= link_to "Upcoming Events", events_path, data: { turbo_frame: "events" } %>
+    <%= link_to "Past Events", events_path(filter: :past), data: { turbo_frame: "events" } %>
     
+    <div class="date-filter">
+      <%= form_with url: events_path, method: :get, data: { turbo_frame: "events" } do |form| %>
+        <div class="date-picker-container" data-controller="flatpickr">
+          <%= form.label :start_date, "From:" %>
+          <div class="input-with-icon">
+            <%= form.text_field :start_date, 
+                              value: params[:start_date], 
+                              data: { flatpickr_target: "input" },
+                              class: "flatpickr-input" %>
+            <i class="calendar-icon" data-flatpickr-target="toggle">📅</i>
+          </div>
+          
+          <%= form.label :end_date, "To:" %>
+          <div class="input-with-icon">
+            <%= form.text_field :end_date, 
+                              value: params[:end_date], 
+                              data: { flatpickr_target: "input" },
+                              class: "flatpickr-input" %>
+            <i class="calendar-icon" data-flatpickr-target="toggle">📅</i>
+          </div>
+          
+          <%= form.submit "Filter by Date", class: "date-filter-button" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <% 
+    events = if params[:filter] == "past"
+      @events.past
+    elsif params[:start_date].present? || params[:end_date].present?
+      filtered_events = @events
+      filtered_events = filtered_events.where("start_time >= ?", Date.parse(params[:start_date])) if params[:start_date].present?
+      filtered_events = filtered_events.where("start_time <= ?", Date.parse(params[:end_date]).end_of_day) if params[:end_date].present?
+      filtered_events
+    else
+      @events.upcoming
+    end
+  %>
+  
+  <% if events.any? %>
+    <% events.each do |event| %>
+      <%= turbo_frame_tag dom_id(event) do %>
+        <%= render event %>
+        <br>
+        <br>
+      <% end %>
+    <% end %>
+  <% else %>
+    <p>No events found for the selected criteria.</p>
   <% end %>
+<% end %>
+
 </div>
 
-<%= button_to "New event", new_event_path, method: :get %>
+<% if user_signed_in? && current_user.manager? %>
+  <%= link_to "New event", new_event_path, data: { turbo_frame: "events" } %>
+<% end %>

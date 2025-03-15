@@ -1,5 +1,5 @@
 <div class="user-profile">
-  <h1>@<%= @user.username %></h1>
+  <h1>@<%= @user.display_name %></h1>
 
   <% if @user == current_user %>
     <p>
@@ -7,7 +7,7 @@
     </p>
   <% end %>
 
-  <h3><%= '@' + @user.username + "'s"%> events:</h3>
+  <h3><%= '@' + @user.display_name + "'s"%> events:</h3>
 
   <% if @events.any? %>
     <div class="events-list">

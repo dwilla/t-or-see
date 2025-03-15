@@ -1,19 +1,7 @@
+<%= turbo_frame_tag dom_id(@event) do %>
 <p style="color: green"><%= notice %></p>
 
 <%= render @event %>
-
-<div>
-  <%= @event.details%>
-</div>
-
-<div>
-  <% if @event.users.include?(current_user) %>
-    <% attendee = @event.attendees.find_by(user: current_user) %>
-    <%= button_to "Cancel Attendance", attendee_path(attendee), method: :delete if attendee %>
-  <% else %>
-    <%= button_to "Attend This Event", attendees_path, method: :post, params: { event_id: @event.id } %>
-  <% end %>
-</div>
 
 <div>
   <h3>People attending this event:</h3>
@@ -22,7 +10,7 @@
 <div>
   <% if @event.attendees.length > 0 %>
     <% @event.attendees.each do |attendee| %>
-    <%= attendee.user.username %>
+    <%= attendee.user.display_name %>
     <% end %>
   <% else %>
     <div>No attendees yet.</div>
@@ -30,9 +18,10 @@
 </div>
 
 <div>
-  <% if @event.creator == current_user %>
+  <% if @event.creator == current_user && current_user.manager? %>
     <%= button_to "Edit this event", edit_event_path(@event), method: :get %>
 
     <%= button_to "Delete Event", @event, method: :delete %>
   <% end %>
 </div>
+<% end %>

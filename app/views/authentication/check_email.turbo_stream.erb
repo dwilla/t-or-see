@@ -1,0 +1,18 @@
+<% if @email.present? %>
+  <% user_exists = User.exists?(email: @email) %>
+  
+  <% if user_exists %>
+    <%= turbo_stream.replace "auth_form" do %>
+      <%= render partial: "users/sessions/form", locals: { email: @email, resource: User.new(email: @email), resource_name: :user } %>
+    <% end %>
+  <% else %>
+    <%= turbo_stream.replace "auth_form" do %>
+      <%= render partial: "users/registrations/form", locals: { email: @email, resource: User.new(email: @email), resource_name: :user } %>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.replace "auth_form" do %>
+    <div class="alert alert-danger">Please provide an email address.</div>
+    <%= render partial: "authentication/email_form" %>
+  <% end %>
+<% end %> 

@@ -1,0 +1,38 @@
+<% if @other_events.present? %>
+  <% @other_events.each do |other_event| %>
+    <%= turbo_stream.replace dom_id(other_event) do %>
+      <%= turbo_frame_tag dom_id(other_event) do %>
+        <%= render other_event %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@event) do %>
+  <%= turbo_frame_tag dom_id(@event) do %>
+    <p style="color: green"><%= notice %></p>
+
+    <%= render @event %>
+
+    <div>
+      <h3>People attending this event:</h3>
+    </div>
+
+    <div>
+      <% if @event.attendees.length > 0 %>
+        <% @event.attendees.each do |attendee| %>
+          <%= attendee.user.display_name %>
+        <% end %>
+      <% else %>
+        <div>No attendees yet.</div>
+      <% end %>
+    </div>
+
+    <div>
+      <% if user_signed_in? && @event.creator == current_user && current_user.manager? %>
+        <%= button_to "Edit this event", edit_event_path(@event), method: :get %>
+        <%= button_to "Delete Event", @event, method: :delete %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

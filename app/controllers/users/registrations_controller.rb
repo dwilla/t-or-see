@@ -5,9 +5,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
-  # def new
-  #   super
-  # end
+  def new
+    # Handles pre-filled email from dynamic sign up
+    if params[:email].present?
+      self.resource = resource_class.new(email: params[:email])
+    end
+
+    if params[:notification_alert]
+      Rails.logger.debug "Setting flash alert for notification"
+      flash[:alert] = "Please sign up or log in to receive event notifications!"
+    end
+    super
+  end
 
   # POST /resource
   # def create
@@ -38,7 +47,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
@@ -59,4 +68,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  # Redirect to the unified auth page instead of the login page
+  def after_sign_out_path_for(resource_or_scope)
+    auth_path
+  end
 end
