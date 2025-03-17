@@ -1,8 +1,17 @@
 <div id="<%= dom_id event %>">
+  <div class="d-flex align-items-center gap-2 mb-0 mt-2">
+    <h3 class="mb-0"><%= event.title %></h3>
+    <p class="mb-0"><span class="badge <%= event.cover.present? ? (event.free? ? 'bg-success' : 'bg-primary') : 'bg-secondary' %>">
+      <%= event.cover.present? ? event.cover.titleize : 'Not Set' %></span>
+    </p>
+  </div>
+  <p class="mb-0">
+    <%= event.location.name %>
+  </p>
   <% if event.display_image %>
     <div class="event-poster">
       <% begin %>
-        <%= image_tag event.display_image.variant(resize_to_limit: [400, 400]), class: "img-fluid rounded" %>
+        <%= image_tag event.display_image.variant(resize_to_limit: [300, 300]), class: "img-fluid rounded" %>
         <% if !event.poster.attached? && event.location.image.attached? %>
           <small class="text-muted">Using location image</small>
         <% end %>
@@ -12,41 +21,26 @@
     </div>
   <% end %>
 
-  <h2>
-    <p>
-      <%= event.title %>
-    </p>
-  </h2>
-  <p>
-    <strong>Date:</strong>
+  <h3 class="mb-0">
     <%= event.date %>
-  </p>
+  </h3>
 
-  <p>
-    <strong>Time:</strong>
+  <p class="mb-2">
     <%= event.start_time.strftime('%I:%M %p') if event.start_time.present? %> - 
     <%= event.end_time.strftime('%I:%M %p') if event.end_time.present? %>
   </p>
 
-  <p>
-    <strong>Location:</strong>
-    <%= event.location.name %>
-  </p>
   <div>
-  <%= event.details%>
-</div>
-
-<div>
-  <% if user_signed_in? %>
-    <% if event.users.include?(current_user) %>
-      <% attendee = event.attendees.find_by(user: current_user) %>
-      <%= button_to "Reminder Added", attendee_path(attendee), method: :delete if attendee %>
+    <% if user_signed_in? %>
+      <% if event.users.include?(current_user) %>
+        <% attendee = event.attendees.find_by(user: current_user) %>
+        <%= button_to "Reminder Added", attendee_path(attendee), method: :delete if attendee %>
+      <% else %>
+        <%= button_to "Remind Me", attendees_path, method: :post, params: { event_id: event.id } %>
+      <% end %>
     <% else %>
-      <%= button_to "Remind Me", attendees_path, method: :post, params: { event_id: event.id } %>
+      <%= link_to "Remind Me", auth_path(notification_alert: true), class: "btn btn-primary", data: { turbo: false } %>
     <% end %>
-  <% else %>
-    <%= link_to "Remind Me", auth_path(notification_alert: true), class: "btn btn-primary", data: { turbo: false } %>
-  <% end %>
-</div>
+  </div>
 
 </div>

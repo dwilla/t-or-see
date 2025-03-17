@@ -1,0 +1,15 @@
+<%= turbo_frame_tag "content_section" do %>
+  <h2 class="retro-title">Event Options</h2>
+  <div class="d-grid gap-2">
+    <%= link_to "All Upcoming Events", events_path, 
+        class: "retro-button",
+        data: { turbo_frame: "_top" } %>
+    <%= link_to "This Weekend", events_path(start_date: @weekend_start, end_date: @weekend_end), 
+        class: "retro-button",
+        data: { turbo_frame: "_top" },
+        title: "#{@weekend_start.strftime('%B %d')} - #{@weekend_end.strftime('%B %d')}" %>
+    <%= link_to "Past Events", events_path(filter: :past), 
+        class: "retro-button",
+        data: { turbo_frame: "_top" } %>
+  </div>
+<% end %> 

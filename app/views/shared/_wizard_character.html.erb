@@ -1,0 +1,39 @@
+<div class="wizard-container position-absolute top-0 end-0 p-3">
+  <div class="d-flex align-items-start">
+    <div class="speech-bubble bg-white p-3 rounded shadow me-3">
+      <p class="mb-0">I am Truth! Your personal T or C tour guide. What is it you seek my friend?</p>
+    </div>
+    <%= image_tag "turtle_wizard.png", class: "wizard-image", alt: "Turtle Wizard" %>
+  </div>
+</div>
+
+<style>
+.wizard-container {
+  margin-top: 5px;
+  z-index: 1000;
+}
+
+.wizard-image {
+  width: 150px;
+  height: auto;
+}
+
+.speech-bubble {
+  position: relative;
+  max-width: 300px;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  right: -10px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid white;
+  border-right: 10px solid transparent;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  transform: rotate(90deg);
+}
+</style> 

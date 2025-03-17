@@ -20,7 +20,7 @@
     </div>
     <% if expanded %>
       <div class="expanded-hours">
-        <table class="table table-striped">
+        <table class="table" style="--bs-table-bg: transparent;">
           <thead>
             <tr>
               <th>Day</th>
@@ -35,7 +35,7 @@
           <tbody>
             <% Date::DAYNAMES.map(&:downcase).each do |day| %>
               <% hours = location.business_hours.find_by(day: day) %>
-              <tr class="<%= 'table-active' if day == current_day %>">
+              <tr style="background: transparent;">
                 <td><%= day.capitalize %></td>
                 <td>
                   <% if hours %>

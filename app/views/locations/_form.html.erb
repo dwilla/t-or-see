@@ -17,6 +17,23 @@
   </div>
 
   <div>
+    <%= form.label :category, style: "display: block" %>
+    <%= form.select :category, Location.categories.keys.map { |k| [k.titleize.gsub('_', '/'), k] }, {}, class: "form-select" %>
+  </div>
+
+  <div>
+    <%= form.label :tagline, "Tagline (max 100 characters)", style: "display: block" %>
+    <%= form.text_field :tagline, maxlength: 100, class: "form-control" %>
+    <div class="form-text">A short, catchy description of your business</div>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.text_area :description, rows: 5, class: "form-control" %>
+    <div class="form-text">Detailed description of your business</div>
+  </div>
+
+  <div>
     <%= form.label :address, style: "display: block" %>
     <%= form.text_field :address %>
   </div>

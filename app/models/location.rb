@@ -10,7 +10,19 @@ class Location < ApplicationRecord
 
   has_one_attached :image
 
+  attribute :category, :integer
+  enum :category, {
+    food_and_beverage: 0,
+    hot_springs: 1,
+    gallery: 2,
+    retail: 3,
+    recreation: 4,
+    lodging: 5
+  }, default: :food_beverage
+
   validates :name, presence: true
+  validates :category, presence: true, inclusion: { in: categories.keys }
+  validates :tagline, length: { maximum: 100 }
 
   def to_s
     name

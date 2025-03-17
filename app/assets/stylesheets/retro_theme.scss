@@ -1,0 +1,251 @@
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+// Game & Watch Zelda color palette
+$gw-gold: #C5B358;
+$gw-green: #2A4D3E;
+$gw-light-green: #4A7B63;
+$gw-black: #1a1a1a;
+$gw-screen: #e8eddf;
+$gw-pixel: #fdfdfd;
+
+// Global styles
+body {
+  background-color: $gw-green;
+  color: $gw-pixel;
+  font-family: 'VT323', monospace;
+  line-height: 1.8;
+  font-size: 18px;  // Increased base font size for better readability
+  background-image: 
+    linear-gradient(45deg, $gw-light-green 25%, transparent 25%),
+    linear-gradient(-45deg, $gw-light-green 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, $gw-light-green 75%),
+    linear-gradient(-45deg, transparent 75%, $gw-light-green 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+// LCD screen container
+.retro-container {
+  background-color: $gw-gold;
+  border: 8px solid $gw-gold;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 2rem;
+  position: relative;
+  box-shadow: 
+    inset 0 0 20px rgba(0,0,0,0.2),
+    0 5px 15px rgba(0,0,0,0.3);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 4px solid $gw-green;
+    border-radius: 5px;
+    z-index: 0;
+  }
+}
+
+// LCD screen card
+.retro-card {
+  background-color: $gw-screen;
+  border: 4px solid $gw-green;
+  padding: 1.5rem;
+  position: relative;
+  margin: 1rem;
+  z-index: 1;
+}
+
+// Retro button styling
+.retro-button {
+  background-color: $gw-green;
+  border: none;
+  color: $gw-gold;
+  font-family: 'VT323', monospace;
+  padding: 1rem 2rem;
+  text-transform: uppercase;
+  position: relative;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin: 0.5rem;
+  border-radius: 5px;
+  box-shadow: 
+    0 4px 0 darken($gw-green, 10%),
+    0 8px 10px rgba(0,0,0,0.2);
+  font-size: 1.2rem;  // Increased button text size
+  
+  &:hover {
+    transform: translateY(2px);
+    box-shadow: 
+      0 2px 0 darken($gw-green, 10%),
+      0 4px 5px rgba(0,0,0,0.2);
+  }
+  
+  &:active {
+    transform: translateY(4px);
+    box-shadow: none;
+  }
+}
+
+// Game & Watch style title
+.retro-title {
+  color: $gw-gold;
+  text-shadow: 
+    2px 2px 0 $gw-green,
+    -2px -2px 0 $gw-green,
+    2px -2px 0 $gw-green,
+    -2px 2px 0 $gw-green;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;  // Increased title size
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 4px;
+    background-color: $gw-gold;
+    border-radius: 2px;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+// LCD style subtitle
+.retro-subtitle {
+  color: $gw-pixel;
+  font-size: 1.5rem;  // Increased subtitle size
+  margin-bottom: 1.5rem;
+  position: relative;
+  line-height: 1.8;
+  
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+}
+
+// Pixel border effect
+.pixel-border {
+  position: relative;
+  border: 4px solid $gw-green;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border: 4px solid $gw-gold;
+    z-index: -1;
+  }
+}
+
+// Header styling
+header {
+  background-color: $gw-gold;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  
+  .pixel-button {
+    @extend .retro-button;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+// Game & Watch container
+.game-watch-container {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: $gw-gold;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(45deg, transparent 45%, $gw-green 45%, $gw-green 55%, transparent 55%),
+      linear-gradient(-45deg, transparent 45%, $gw-green 45%, $gw-green 55%, transparent 55%);
+    background-size: 20px 20px;
+    opacity: 0.1;
+    pointer-events: none;
+  }
+}
+
+// Remove LCD screen scanlines and pixel dot matrix effects
+.retro-container, .retro-card {
+  &::before {
+    display: none;
+  }
+}
+
+// Remove LCD flicker animation
+.retro-card {
+  animation: none;
+}
+
+// Improve text readability
+.retro-title, .retro-subtitle {
+  position: relative;
+  z-index: 2;
+  
+  &::selection {
+    background-color: $gw-green;
+    color: $gw-gold;
+  }
+}
+
+// Add new styles for better text readability
+p, li, div {
+  margin-bottom: 1.5rem;  // Increased spacing
+  max-width: 800px;
+  font-size: 1.2rem;  // Increased text size
+}
+
+// Improve link visibility
+a {
+  color: $gw-green;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  font-size: 1.2rem;  // Increased link size
+  
+  &:hover {
+    border-bottom-color: $gw-green;
+  }
+}
+
+// Improve form element readability
+input, textarea, select {
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;  // Increased input text size
+  line-height: 1.5;
+  padding: 0.5rem;
+  background-color: $gw-screen;
+  border: 2px solid $gw-green;
+  color: $gw-pixel;
+  
+  &:focus {
+    outline: none;
+    border-color: $gw-gold;
+    box-shadow: 0 0 0 2px rgba($gw-gold, 0.3);
+  }
+} 

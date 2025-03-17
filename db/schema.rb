@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_15_155639) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_16_015306) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -69,6 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_15_155639) do
     t.time "start_time"
     t.time "end_time"
     t.string "image"
+    t.integer "cover"
     t.index ["creator_id"], name: "index_events_on_creator_id"
     t.index ["location_id"], name: "index_events_on_location_id"
   end
@@ -81,6 +82,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_15_155639) do
     t.string "zip_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "category", default: 0, null: false
+    t.string "tagline", limit: 100
+    t.text "description"
   end
 
   create_table "managers", force: :cascade do |t|

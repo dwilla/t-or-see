@@ -1,35 +1,42 @@
-<div id="<%= dom_id location %>">
+<div id="<%= dom_id location %>" class="location-card mb-0">
+  <h2 class="mb-0"><%= location.name %></h2>
+
+  <% if location.tagline.present? %>
+    <p class="lead text-muted mt-0 mb-0"><%= location.tagline %></p>
+  <% end %>
+
+  <div class="location-meta d-flex gap-2 mt-0">
+    <span class="badge bg-info category-badge mt-0"><%= location.category.titleize.gsub('_', ' ') %></span>
+  </div>
+
   <% if location.image.attached? %>
     <div class="location-image">
-      <%= image_tag location.image.variant(resize_to_limit: [400, 400]), class: "img-fluid rounded" %>
+      <%= image_tag location.image.variant(resize_to_limit: [50, 50]), class: "img-fluid rounded" %>
     </div>
   <% end %>
 
-  <h2>
-    <%= location.name %>
-  </h2>
+  <div class="location-details">
+    <p>
+      <%= location.address %>
+      <%= link_to "Directions", "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(location.address)}", 
+          class: "directions-link", 
+          target: "_blank", 
+          rel: "noopener noreferrer" %>
+    </p>
 
-  <p>
-    <strong>Address:</strong>
-    <%= location.address %>
-  </p>
+  </div>
 
-  <p>
-    <strong>City:</strong>
-    <%= location.city %>
-  </p>
-
-  <p>
-    <strong>State:</strong>
-    <%= location.state %>
-  </p>
-
-  <p>
-    <strong>Zip Code:</strong>
-    <%= location.zip_code %>
-  </p>
-  
   <% if location.business_hours.any? %>
     <%= render partial: 'locations/business_hours', locals: { location: location, expanded: false } %>
   <% end %>
+
+  <% if show_actions && user_signed_in? && (current_user.admin? || current_user.managed_locations.include?(location)) %>
+    <div class="actions">
+      <%= link_to "Edit", edit_location_path(location), data: { turbo: false } %>
+      <% if current_user.admin? %>
+        | <%= link_to "Delete", location, method: :delete, data: { confirm: "Are you sure?" } %>
+      <% end %>
+    </div>
+  <% end %>
+ 
 </div> 

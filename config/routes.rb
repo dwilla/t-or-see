@@ -30,5 +30,12 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Root path
-  root "events#index"
+  root "home#index"
+
+  resources :home, only: [ :index ] do
+    collection do
+      get :events_choice
+      get :businesses_choice
+    end
+  end
 end

@@ -6,6 +6,14 @@ class LocationsController < ApplicationController
 
   def index
     @locations = Location.all
+    @locations = @locations.where(category: params[:category]) if params[:category].present?
+    @locations = @locations.select(&:currently_open?) if params[:open_now] == "true"
+    @categories = Location.categories.keys.map { |k| [ k.titleize.gsub("_", "/"), k ] }
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream { render turbo_stream: turbo_stream.update("locations", partial: "locations/list") }
+    end
   end
 
   def show
@@ -77,7 +85,8 @@ class LocationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def location_params
       params.require(:location).permit(
-        :name, :address, :city, :state, :zip_code, :image,
+        :name, :address, :city, :state, :zip_code, :image, :category,
+        :tagline, :description,
         business_hours_attributes: [ :id, :day, :opens, :closes, :_destroy ]
       )
     end

@@ -1,45 +1,37 @@
-<h1>Locations</h1>
-
 <p style="color: green"><%= notice %></p>
 
-<div id="locations">
-  <% @locations.each do |location| %>
-    <div class="location-card">
-      <h2><%= location.name %></h2>
-      
-      <% if location.image.attached? %>
-        <div class="location-image">
-          <%= image_tag location.image.variant(resize_to_limit: [400, 400]) %>
-        </div>
-      <% end %>
-      
-      <div class="location-details">
-        <p>
-        <%= location.address %>
-        <%= link_to "📍 Directions", "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(location.address)}", 
-            class: "directions-link", 
-            target: "_blank", 
-            rel: "noopener noreferrer" %>
-        </p>
+<div class="filter-section mb-4">
+  <%= form_with url: locations_path, method: :get, data: { turbo_frame: "locations", controller: "auto-submit" } do |f| %>
+    <div class="d-flex align-items-center gap-3">
+      <div class="flex-grow-1">
+        <%= f.select :category,
+            options_for_select(@categories, params[:category]),
+            { prompt: "All Categories" },
+            { class: "form-select",
+              data: { action: "change->auto-submit#submit" } } %>
       </div>
 
-      <% if location.business_hours.any? %>
-        <%= render partial: 'business_hours', locals: { location: location, expanded: false } %>
-      <% end %>
-
-      <div class="actions">
-        <% if user_signed_in? && (current_user.admin? || current_user.managed_locations.include?(location)) %>
-          <%= link_to "Edit", edit_location_path(location) %>
-          <% if current_user.admin? %>
-            | <%= link_to "Delete", location, method: :delete, data: { confirm: "Are you sure?" } %>
-          <% end %>
-        <% end %>
+      <div class="form-check form-switch">
+        <%= f.check_box :open_now,
+            { class: "form-check-input",
+              data: { action: "change->auto-submit#submit" },
+              checked: params[:open_now] == "true" },
+            "true",
+            "false" %>
+        <%= f.label :open_now, "Open Now", class: "form-check-label" %>
       </div>
-      
-      <hr>
     </div>
   <% end %>
 </div>
+
+<%= turbo_frame_tag "locations" do %>
+  <div id="locations">
+    <% @locations.each do |location| %>
+      <%= render partial: 'location', locals: { location: location, show_actions: true } %>
+      <hr>
+    <% end %>
+  </div>
+<% end %>
 
 <% if user_signed_in? && current_user.admin? %>
   <%= link_to "New location", new_location_path %>

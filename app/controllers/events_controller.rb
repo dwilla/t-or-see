@@ -7,10 +7,15 @@ class EventsController < ApplicationController
   # GET /events or /events.json
   def index
     @events = Event.all
+    @events = if params[:past_events] == "past"
+      @events.past.order(date: :desc, start_time: :desc)
+    else
+      @events.upcoming.order(date: :asc, start_time: :asc)
+    end
 
     respond_to do |format|
       format.html
-      format.turbo_stream { @events = @events.upcoming }
+      format.turbo_stream
     end
   end
 
@@ -84,24 +89,28 @@ class EventsController < ApplicationController
 
     # Set available locations for the form
     def set_locations
-      # If user is a manager, show their managed locations
-      @locations = current_user.managed_locations
-
-      # If user doesn't manage any locations or we want to show all locations, add all locations
-      if @locations.empty?
+      if current_user.admin?
         @locations = Location.all
+      else
+        # If user is a manager, show their managed locations
+        @locations = current_user.managed_locations
+
+        # If user doesn't manage any locations, show all locations
+        if @locations.empty?
+          @locations = Location.all
+        end
       end
     end
 
     # Ensure the user is a manager of at least one location
     def ensure_manager
-      unless current_user.manager?
-        redirect_to events_path, alert: "You need to be a manager of at least one location to create or edit events."
+      unless current_user.manager? || current_user.admin?
+        redirect_to events_path, alert: "You need to be a manager of at least one location or an admin to create or edit events."
       end
     end
 
     # Only allow a list of trusted parameters through.
     def event_params
-      params.require(:event).permit(:date, :location_id, :title, :creator_id, :details, :start_time, :end_time, :poster)
+      params.require(:event).permit(:date, :location_id, :title, :creator_id, :details, :start_time, :end_time, :poster, :cover)
     end
 end

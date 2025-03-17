@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Eventbrite Clone" %></title>
+    <title><%= content_for(:title) || "Truth or Consequences" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
 
     <%= yield :head %>
 
@@ -16,32 +19,56 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <header>
-      <%= link_to "Locations", locations_path %>
-      <% if user_signed_in? %>
-        <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { turbo: false } %>
-      <% else %>
-        <%= link_to "Account", auth_path %>
+    <div class="game-watch-container container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center">
+      <header class="w-100">
+        <div class="container mt-2 mb-0">
+          <nav class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex align-items-center">
+              <%= link_to root_path, class: "retro-button" do %>
+                🏠 Home
+              <% end %>
+              
+              <% if current_page?(events_path) %>
+                <%= link_to "Businesses", locations_path, class: "retro-button" %>
+              <% elsif current_page?(locations_path) %>
+                <%= link_to "Events", events_path, class: "retro-button" %>
+              <% end %>
+            </div>
+            
+            <div class="d-flex gap-2 align-items-center">
+              <% if user_signed_in? %>
+                <%= button_to "Logout", destroy_user_session_path, 
+                    method: :delete, 
+                    class: "retro-button",
+                    data: { turbo: false } %>
+              <% else %>
+                <%= link_to "Account", auth_path, class: "retro-button" %>
+              <% end %>
+            </div>
+          </nav>
+        </div>
+      </header>
+      
+      <% if flash.any? %>
+        <div class="container mx-auto mt-4" style="max-width: 800px; margin: 0 auto;">
+          <% flash.each do |key, value| %>
+            <div class="pixel-border p-4 mb-2">
+              <%= value %>
+            </div>
+          <% end %>
+        </div>
       <% end %>
-    </header>
-    
-    <% if flash.any? %>
-      <div class="flash-messages">
-        <% flash.each do |key, value| %>
-          <div class="alert alert-<%= key == 'notice' ? 'info' : 'danger' %>">
-            <%= value %>
+      
+      <main class="container mx-auto p-4" style="max-width: 800px; margin: 0 auto;">
+        <%= turbo_frame_tag "content_section" do %>
+          <div class="retro-container">
+            <%= yield %>
           </div>
         <% end %>
-      </div>
-    <% end %>
-    
-    <%= yield %>
+      </main>
+    </div>
   </body>
 </html>

@@ -15,6 +15,12 @@
     <%= form.label :title, style: "display: block" %>
     <%= form.text_field :title %>
   </div>
+
+  <div>
+    <%= form.label :cover, style: "display: block" %>
+    <%= form.select :cover, Event.covers.keys.map { |cover| [cover.titleize, cover] }, {}, { class: "form-select" } %>
+  </div>
+
   <div>
     <%= form.label :date, style: "display: block" %>
     <%= form.date_field :date %>

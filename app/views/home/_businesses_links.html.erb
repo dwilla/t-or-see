@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "content_section" do %>
+  <h2 class="retro-title">Business Options</h2>
+  <div class="d-grid gap-2">
+    <%= link_to "All Businesses", locations_path, 
+        class: "retro-button",
+        data: { turbo_frame: "_top" } %>
+    
+    <% @business_categories.each do |name, category| %>
+      <%= link_to name, locations_path(category: category), 
+          class: "retro-button",
+          data: { turbo_frame: "_top" } %>
+    <% end %>
+  </div>
+<% end %> 

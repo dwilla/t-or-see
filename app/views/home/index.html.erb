@@ -1,0 +1,28 @@
+<div class="container mt-5" style="max-width: 800px; margin: 0 auto;">
+  <div class="row justify-content-center">
+    <div class="col-12 text-center">
+      <%= render 'shared/wizard_character' %>
+      <%= turbo_frame_tag "content_section" do %>
+        <!-- Main choices -->
+        <div id="main-choices" class="mt-5">
+          <br>
+          <br>
+          <h2 class="retro-title mb-4">Select One</h2>
+          <div class="d-grid gap-3" style="max-width: 400px; margin: 0 auto;">
+            <%= link_to events_choice_home_index_path, 
+                class: "retro-button",
+                data: { turbo_frame: "content_section" } do %>
+              Events 🎉
+            <% end %>
+            
+            <%= link_to businesses_choice_home_index_path,
+                class: "retro-button",
+                data: { turbo_frame: "content_section" } do %>
+              Businesses 📍
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -6,6 +6,11 @@ class Event < ApplicationRecord
 
   has_one_attached :poster
 
+  attribute :cover, :integer
+  enum :cover, { free: 0, paid: 1 }, default: :free
+
+  validates :cover, presence: true, inclusion: { in: covers.keys }
+
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :location, presence: true
