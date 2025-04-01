@@ -19,9 +19,9 @@
 
 <div>
   <% if @event.creator == current_user && current_user.manager? %>
-    <%= button_to "Edit this event", edit_event_path(@event), method: :get %>
-
-    <%= button_to "Delete Event", @event, method: :delete %>
+    <%= link_to "Edit", edit_event_path(@event), class: "btn btn-secondary", data: { turbo: false } %>
+    <%= button_to "Delete", @event, method: :delete, class: "btn btn-danger", form: { data: { turbo: false } } %>
   <% end %>
+  <%= link_to "Back", events_path, class: "btn btn-primary", data: { turbo: false } %>
 </div>
 <% end %>
