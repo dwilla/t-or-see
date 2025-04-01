@@ -1,6 +1,6 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @location %>
+<%= render @location, show_actions: true %>
 
 <div>
   <% if user_signed_in? && (current_user.admin? || current_user.managed_locations.include?(@location)) %>
@@ -8,6 +8,7 @@
     <% if current_user.admin? %>
       | <%= link_to "Delete this location", @location, method: :delete, data: { confirm: "Are you sure?" } %>
     <% end %>
+    |
   <% end %>
   <%= link_to "Back to locations", locations_path %>
 </div>

@@ -12,7 +12,7 @@ $gw-pixel: #fdfdfd;
 // Global styles
 body {
   background-color: $gw-green;
-  color: $gw-pixel;
+  color: $gw-black;
   font-family: 'VT323', monospace;
   line-height: 1.8;
   font-size: 18px;  // Increased base font size for better readability
@@ -241,7 +241,7 @@ input, textarea, select {
   padding: 0.5rem;
   background-color: $gw-screen;
   border: 2px solid $gw-green;
-  color: $gw-pixel;
+  color: $gw-black;
   
   &:focus {
     outline: none;

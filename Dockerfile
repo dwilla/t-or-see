@@ -8,7 +8,7 @@
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.4.2
+ARG RUBY_VERSION=3.2.2
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
@@ -16,7 +16,7 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 libffi-dev node-gyp python-is-python3 sudo redis-server && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
@@ -24,6 +24,19 @@ ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
+
+# Create rails user and group
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
+
+# Configure sudo for rails user
+RUN echo "rails ALL=(ALL) NOPASSWD: /bin/mkdir, /bin/chown, /bin/chmod, /etc/init.d/redis-server" >> /etc/sudoers.d/rails && \
+    chmod 0440 /etc/sudoers.d/rails
+
+# Create and set permissions for /data directory
+RUN mkdir -p /data && \
+    chown -R rails:rails /data && \
+    chmod -R 777 /data
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
@@ -42,14 +55,17 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+# Set build environment to prevent environment variable access during build
+ENV RAILS_ENV=build
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
-
+# Reset RAILS_ENV for the final stage
+ENV RAILS_ENV=production
 
 # Final stage for app image
 FROM base
@@ -58,15 +74,17 @@ FROM base
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
+# Set permissions for runtime files
+RUN chown -R rails:rails db log storage tmp && \
+    chmod +x /rails/bin/deploy && \
+    mkdir -p /data && \
+    chown -R rails:rails /data && \
+    chmod -R 777 /data
+
 USER 1000:1000
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+# Start server via Puma directly
+EXPOSE 8080
 
-# Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+# Run deploy script and start Puma
+CMD ["/bin/bash", "-c", "/rails/bin/deploy && bundle exec puma -C config/puma.rb -b tcp://0.0.0.0:8080"]

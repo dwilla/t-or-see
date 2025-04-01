@@ -1,0 +1,73 @@
+# fly.toml app configuration file generated for t-or-see on 2025-03-17T17:28:05-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 't-or-see'
+primary_region = 'dfw'
+console_command = '/rails/bin/rails console'
+
+[build]
+
+[env]
+  RAILS_LOG_TO_STDOUT = '1'
+  RAILS_SERVE_STATIC_FILES = 'true'
+  RAILS_STORAGE_PATH = '/data/storage'
+  RAILS_MAX_THREADS = '5'
+  WEB_CONCURRENCY = '2'
+  MALLOC_ARENA_MAX = '2'
+  RAILS_ENV = 'production'
+  PORT = '8080'
+  RACK_ENV = 'production'
+  FLY_APP_NAME = 't-or-see'
+  REDIS_URL = 'redis://default:1dd69118bb4a43ce99fd35f394787e2f@fly-ancient-smoke-1632.upstash.io:6379'
+
+[[mounts]]
+  source = 't_or_see_data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [[http_service.checks]]
+    interval = '30s'
+    timeout = '10s'
+    grace_period = '120s'
+    method = 'GET'
+    path = '/up'
+    protocol = 'http'
+    tls_skip_verify = false
+
+    [http_service.checks.headers]
+      X-Forwarded-Proto = 'https'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[[statics]]
+  guest_path = '/rails/public'
+  url_prefix = '/'
+
+[deploy]
+  strategy = "rolling"
+  release_command = "bin/rails db:migrate"
+
+[services]
+  [[services.ports]]
+    port = 8080
+    handlers = ["http"]
+    force_https = true
+
+  [services.redis]
+    protocol = "tcp"
+    internal_port = 6379
+    auto_stop_machines = true
+    auto_start_machines = true
+    min_machines_running = 1

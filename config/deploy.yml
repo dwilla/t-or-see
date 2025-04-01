@@ -46,6 +46,10 @@ env:
     # Set number of cores available to the application on each server (default: 1).
     # WEB_CONCURRENCY: 2
 
+    # Database configuration
+    DATABASE_URL: "sqlite3:///data/storage/production.sqlite3"
+    RAILS_MAX_THREADS: 5
+
     # Match this to any external database server to configure Active Record correctly
     # Use eventbrite_clone-db for a db accessory server on same machine via local kamal docker network.
     # DB_HOST: 192.168.0.2
@@ -65,7 +69,7 @@ aliases:
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 # Recommended to change this to a mounted volume path that is backed up off server.
 volumes:
-  - "eventbrite_clone_storage:/rails/storage"
+  - "eventbrite_clone_storage:/data/storage"
 
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid

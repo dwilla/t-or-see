@@ -25,10 +25,9 @@ gem "cocoon"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
+# Use the database-backed adapters for Active Job and Action Cable
 gem "solid_queue"
-gem "solid_cable"
+# gem "solid_cable"  # Commenting out solid_cable
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -69,3 +68,12 @@ gem "devise", "~> 4.9"
 # Add Bootstrap
 gem "bootstrap", "~> 5.3.2"
 gem "sassc-rails"
+
+gem "dockerfile-rails", ">= 1.7", group: :development
+
+gem "litestream", "~> 0.12.0"
+
+gem "aws-sdk-s3", "~> 1.182", require: false
+
+# Add Redis for Action Cable and caching
+gem "redis", "~> 5.0"

@@ -4,8 +4,20 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+one:
+  name: "Test Location 1"
+  address: "123 Test St"
+  description: "A test location"
+  city: "Test City"
+  state: "TS"
+  zip_code: "12345"
+  category: 0
+
+two:
+  name: "Test Location 2"
+  address: "456 Test Ave"
+  description: "Another test location"
+  city: "Test City"
+  state: "TS"
+  zip_code: "12345"
+  category: 0

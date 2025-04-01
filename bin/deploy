@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e
+
+# Create storage directory if it doesn't exist
+mkdir -p /data/storage
+
+# Set correct permissions
+chown -R rails:rails /data/storage
+chmod -R 777 /data/storage
+
+# Ensure database directory exists and has correct permissions
+mkdir -p /data/storage
+chown -R rails:rails /data/storage
+chmod -R 777 /data/storage
+
+# Initialize databases if they don't exist
+for db in production.sqlite3 production_cache.sqlite3 production_queue.sqlite3 production_cable.sqlite3; do
+  if [ ! -f "/data/storage/$db" ]; then
+    touch "/data/storage/$db"
+    chown rails:rails "/data/storage/$db"
+    chmod 666 "/data/storage/$db"
+  fi
+done
+
+# Run database migrations with retries
+max_retries=3
+retry_count=1
+
+while [ $retry_count -le $max_retries ]; do
+  echo "Attempting database migration (attempt $retry_count of $max_retries)..."
+  bundle exec rails db:migrate RAILS_ENV=production && break
+  retry_count=$((retry_count + 1))
+  if [ $retry_count -le $max_retries ]; then
+    echo "Migration failed. Waiting 5 seconds before retry..."
+    sleep 5
+  fi
+done
+
+if [ $retry_count -gt $max_retries ]; then
+  echo "Database migration failed after $max_retries attempts"
+  exit 1
+fi
+
+# Ensure tmp directory exists and has correct permissions
+mkdir -p tmp/pids
+chown -R rails:rails tmp
+chmod -R 777 tmp
+
+# Start the server with proper environment variables
+export RAILS_ENV=production
+export RAILS_LOG_TO_STDOUT=1
+export RAILS_SERVE_STATIC_FILES=true
+export RAILS_STORAGE_PATH=/data/storage
+export RAILS_MAX_THREADS=5
+export WEB_CONCURRENCY=2
+export MALLOC_ARENA_MAX=2
+
+# Start the server
+exec "$@" 

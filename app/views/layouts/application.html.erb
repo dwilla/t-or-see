@@ -19,6 +19,23 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+
+    <style>
+      @media (max-width: 580px) {
+        body {
+          transform: scale(0.8);
+          transform-origin: top center;
+          width: 125%; /* Compensate for scale to prevent horizontal scroll */
+          margin-left: -12.5%; /* Center the scaled container */
+          min-height: 125vh; /* Compensate for the scale factor */
+        }
+        
+        /* Ensure the container doesn't create extra space */
+        .game-watch-container {
+          padding: 0;
+        }
+      }
+    </style>
   </head>
 
   <body>
