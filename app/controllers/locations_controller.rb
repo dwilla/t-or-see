@@ -63,10 +63,10 @@ class LocationsController < ApplicationController
   end
 
   def destroy
-    @location.destroy!
+    @location.destroy
 
     respond_to do |format|
-      format.html { redirect_to locations_path, notice: "Location was successfully destroyed." }
+      format.html { redirect_to locations_url, notice: "Location was successfully deleted." }
       format.json { head :no_content }
     end
   end
@@ -85,23 +85,22 @@ class LocationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def location_params
       params.require(:location).permit(
-        :name, :address, :city, :state, :zip_code, :image, :category,
-        :tagline, :description,
-        business_hours_attributes: [ :id, :day, :opens, :closes, :_destroy ]
+        :name, :address, :phone, :website, :category,
+        :description, :latitude, :longitude, :business_hours
       )
     end
 
     # Ensure the user is an admin
     def ensure_admin
       unless current_user&.admin?
-        redirect_to root_path, alert: "You need to be an admin to access location management."
+        redirect_to root_path, alert: "You are not authorized to perform this action."
       end
     end
 
     # Ensure the user is either an admin or a manager of this location
     def ensure_admin_or_manager
       unless current_user&.admin? || current_user&.managed_locations&.include?(@location)
-        redirect_to root_path, alert: "You need to be an admin or a manager of this location to edit it."
+        redirect_to root_path, alert: "You are not authorized to perform this action."
       end
     end
 end

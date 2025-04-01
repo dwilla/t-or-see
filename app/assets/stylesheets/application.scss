@@ -74,4 +74,18 @@ main {
   letter-spacing: 0.3px !important;
   text-transform: none !important;
   line-height: 1.2 !important;
+}
+
+// Override heading colors
+h2:not(.retro-title) {
+  color: #000000 !important;
+}
+
+// Wizard character specific styling
+.wizard-character {
+  color: #ffffff !important;
+  
+  p {
+    color: #000000 !important;
+  }
 } 

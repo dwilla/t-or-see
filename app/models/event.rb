@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :location
-  has_many :attendees
+  has_many :attendees, dependent: :delete_all
   has_many :users, through: :attendees
 
   has_one_attached :poster

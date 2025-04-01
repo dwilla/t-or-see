@@ -34,9 +34,9 @@
     <% if user_signed_in? %>
       <% if event.users.include?(current_user) %>
         <% attendee = event.attendees.find_by(user: current_user) %>
-        <%= button_to "Reminder Added", attendee_path(attendee), method: :delete if attendee %>
+        <%= button_to "Reminder Added", event_attendee_path(event, attendee), method: :delete if attendee %>
       <% else %>
-        <%= button_to "Remind Me", attendees_path, method: :post, params: { event_id: event.id } %>
+        <%= button_to "Remind Me", event_attendees_path(event), method: :post %>
       <% end %>
     <% else %>
       <%= link_to "Remind Me", auth_path(notification_alert: true), class: "btn btn-primary", data: { turbo: false } %>

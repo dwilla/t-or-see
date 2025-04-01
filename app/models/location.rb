@@ -1,8 +1,8 @@
 class Location < ApplicationRecord
-  has_many :events
-  has_many :managers
+  has_many :managers, dependent: :delete_all
   has_many :users, through: :managers
-  has_many :business_hours, dependent: :destroy
+  has_many :events, dependent: :delete_all
+  has_many :business_hours, dependent: :delete_all
 
   accepts_nested_attributes_for :business_hours,
                                reject_if: :all_blank,
