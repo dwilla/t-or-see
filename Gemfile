@@ -66,7 +66,7 @@ end
 gem "devise", "~> 4.9"
 
 # Add Bootstrap
-gem "bootstrap", "~> 5.3.2"
+gem "bootstrap", "~> 5.3.5"
 gem "sassc-rails"
 
 gem "dockerfile-rails", ">= 1.7", group: :development
